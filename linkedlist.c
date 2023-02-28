@@ -94,13 +94,24 @@ int list_rm(list_t *list, int *val, size_t pos) {
     if (list->head) list->tail = NULL;
   } else {
     while (--pos) it = it->next;
-
+    
     if (val) *val = it->next->data;
 
-    node_t *temp = it;
-    it = it->next;
+    node_t *temp = it;  //current node
+    it = it->next; //next node
+    temp->next = it->next;
 
-    temp->next = temp->next->next;
+    /*if (!it->next) {
+      //checking if next node is null
+      //if it is null, erase previous node and set node before that to the NULL of tail
+      temp->next = NULL;
+      list->tail = temp;
+      free(it);
+      list->size--;
+      return 0;
+    }*/
+
+    if (!it->next) list->tail = temp;
   }
 
   free(it);
@@ -168,9 +179,8 @@ int main(void) {
   puts("insert 100 at 2");
   list_insert(list, 100, 2);
   list_loop(list);
-  puts("removed at 3");
   int removed;
-  list_rm(list, &removed, 3);
+  /*list_rm(list, &removed, 3);
   printf("removed: %d\n", removed);
   puts("set 21 at 3");
   list_set(list, 21, 3);
@@ -178,6 +188,10 @@ int main(void) {
   puts("getting at 3");
   int get;
   list_get(list, &get, 3);
-  printf("Got\t%d\n", get);
+  printf("Got\t%d\n", get);*/
+  list_rm(list,&removed, 3);
+  list_loop(list);
+  list_append(list, 4);
+  list_loop(list);
   list_free(list);
 }
